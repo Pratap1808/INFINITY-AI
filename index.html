@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#05040f" />
+<link rel="manifest" href="manifest.json" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="INFINITY AI" />
+<link rel="apple-touch-icon" href="assets/icon-192.png" />
+<title>INFINITY AI</title>
+<link rel="icon" href="assets/logo.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ===================== SPLASH SCREEN ===================== -->
+<div id="splash" class="splash">
+  <canvas id="splash-stars" class="stars-canvas"></canvas>
+  <div class="splash-content">
+    <h1 id="splash-title" class="splash-title" aria-label="INFINITY AI"></h1>
+    <div id="logo-reveal" class="logo-reveal">
+      <img id="splash-logo-img" src="assets/logo.png" alt="INFINITY AI logo" class="splash-logo-img" />
+    </div>
+  </div>
+  <div class="splash-tagline">Your infinite intelligence, reimagined.</div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="app" class="app" hidden>
+  <canvas id="bg-stars" class="stars-canvas fixed-bg"></canvas>
+  <div class="nebula-glow nebula-1"></div>
+  <div class="nebula-glow nebula-2"></div>
+
+  <!-- Top bar -->
+  <header class="topbar glass">
+    <button id="menu-btn" class="icon-btn" aria-label="Open menu">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="brand">
+      <img src="assets/logo.png" alt="INFINITY AI" class="brand-logo" />
+      <span class="brand-name">INFINITY <em>AI</em></span>
+    </div>
+    <button id="profile-btn" class="icon-btn" aria-label="Profile">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <!-- Side drawer -->
+  <nav id="drawer" class="drawer glass">
+    <div class="drawer-header">
+      <img src="assets/logo.png" class="drawer-logo" alt="" />
+      <span>INFINITY AI</span>
+      <button id="drawer-close" class="icon-btn small">✕</button>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-label">AI Modes</div>
+      <div id="mode-list" class="mode-list">
+        <button class="mode-chip active" data-mode="assistant">🤖 Assistant</button>
+        <button class="mode-chip" data-mode="study">📚 Study</button>
+        <button class="mode-chip" data-mode="coding">💻 Coding</button>
+        <button class="mode-chip" data-mode="writer">✍️ Writer</button>
+        <button class="mode-chip" data-mode="translator">🌐 Translator</button>
+        <button class="mode-chip" data-mode="research">🔎 Research</button>
+        <button class="mode-chip" data-mode="creative">🎨 Creative</button>
+      </div>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-label">Tools</div>
+      <button class="drawer-item" data-tool="image">🖼️ Image AI</button>
+      <button class="drawer-item" data-tool="video">🎬 Video AI</button>
+      <button class="drawer-item" data-tool="ocr">🔤 OCR Scan</button>
+      <button class="drawer-item" data-tool="search">🛰️ Web Search</button>
+      <button class="drawer-item" data-tool="news">📰 News</button>
+      <button class="drawer-item" data-tool="weather">☁️ Weather</button>
+    </div>
+
+    <div class="drawer-section">
+      <div class="drawer-label">Chat History</div>
+      <div id="history-list" class="history-list">
+        <div class="history-empty">No saved chats yet.</div>
+      </div>
+      <button id="new-chat-btn" class="drawer-item accent">➕ New Chat</button>
+    </div>
+
+    <div class="drawer-footer">
+      <button id="settings-btn" class="drawer-item">⚙️ Settings</button>
+      <button id="owner-btn" class="drawer-item owner-item">🛡️ Owner Mode</button>
+    </div>
+  </nav>
+  <div id="drawer-overlay" class="drawer-overlay"></div>
+
+  <!-- Chat area -->
+  <main class="chat-wrap">
+    <div id="chat-scroll" class="chat-scroll">
+      <div class="welcome-card glass">
+        <img src="assets/logo.png" class="welcome-logo" alt="" />
+        <h2>Hello, I'm INFINITY AI</h2>
+        <p>Ask me anything, switch modes from the menu, or tap the mic to speak. I can chat, code, research, translate, read images, and more.</p>
+      </div>
+      <div id="messages" class="messages"></div>
+      <div id="typing-indicator" class="typing-indicator" hidden>
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+    </div>
+
+    <!-- Floating input bar -->
+    <div id="input-bar" class="input-bar glass">
+      <button id="attach-btn" class="icon-btn" aria-label="Attach file">
+        <svg viewBox="0 0 24 24"><path d="M21 8.5V16a5 5 0 0 1-5 5H9a6 6 0 0 1-6-6V7a4 4 0 0 1 8 0v9a2 2 0 0 1-4 0V8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+      <input type="file" id="file-input" hidden accept="image/*,.txt,.md,.csv,.json,.pdf" />
+
+      <div class="input-field-wrap">
+        <textarea id="text-input" class="text-input" placeholder="Message INFINITY AI…" rows="1"></textarea>
+      </div>
+
+      <button id="mic-btn" class="icon-btn mic-btn" aria-label="Voice input">
+        <svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+      </button>
+
+      <button id="send-btn" class="icon-btn send-btn" aria-label="Send message">
+        <svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 8 6 8-16-8z" fill="currentColor"/></svg>
+      </button>
+    </div>
+  </main>
+</div>
+
+<!-- ===================== PANELS / MODALS ===================== -->
+
+<!-- Settings panel -->
+<div id="settings-modal" class="modal-overlay" hidden>
+  <div class="modal glass">
+    <div class="modal-header"><h3>Settings</h3><button class="icon-btn small close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="setting-row">
+        <label>Voice output</label>
+        <select id="voice-select"></select>
+      </div>
+      <div class="setting-row">
+        <label>Language</label>
+        <select id="language-select">
+          <option value="en-US">English (US)</option>
+          <option value="en-GB">English (UK)</option>
+          <option value="hi-IN">Hindi</option>
+          <option value="es-ES">Spanish</option>
+          <option value="fr-FR">French</option>
+          <option value="de-DE">German</option>
+          <option value="ar-SA">Arabic</option>
+          <option value="ja-JP">Japanese</option>
+          <option value="zh-CN">Chinese</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <label>Text-to-speech</label>
+        <input type="checkbox" id="tts-toggle" class="toggle" checked />
+      </div>
+      <div class="setting-row">
+        <label>Theme</label>
+        <select id="theme-select">
+          <option value="nebula-violet">Nebula Violet</option>
+          <option value="aurora-cyan">Aurora Cyan</option>
+          <option value="solar-magenta">Solar Magenta</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <label>Memory</label>
+        <input type="checkbox" id="memory-toggle" class="toggle" checked />
+      </div>
+      <button id="clear-memory-btn" class="ghost-btn">Clear my memory</button>
+      <button id="clear-history-btn" class="ghost-btn">Clear chat history</button>
+    </div>
+  </div>
+</div>
+
+<!-- Profile panel -->
+<div id="profile-modal" class="modal-overlay" hidden>
+  <div class="modal glass">
+    <div class="modal-header"><h3>Profile</h3><button class="icon-btn small close-modal">✕</button></div>
+    <div class="modal-body">
+      <div class="profile-avatar">🪐</div>
+      <div class="setting-row">
+        <label>Display name</label>
+        <input type="text" id="profile-name" placeholder="Explorer" />
+      </div>
+      <div class="setting-row">
+        <label>Device ID</label>
+        <span id="device-id-display" class="muted"></span>
+      </div>
+      <div class="setting-row">
+        <label>Owner status</label>
+        <span id="owner-status-display" class="muted">Not verified</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Owner Mode modal -->
+<div id="owner-modal" class="modal-overlay" hidden>
+  <div class="modal glass owner-modal">
+    <div class="modal-header"><h3>🛡️ Owner Mode</h3><button class="icon-btn small close-modal">✕</button></div>
+    <div class="modal-body">
+
+      <div id="owner-step-password" class="owner-step">
+        <p class="muted">Step 1 of 2 — Enter owner password</p>
+        <input type="password" id="owner-password" class="text-field" placeholder="Owner password" />
+        <button id="owner-password-submit" class="primary-btn">Continue</button>
+        <p id="owner-password-error" class="error-text"></p>
+      </div>
+
+      <div id="owner-step-biometric" class="owner-step" hidden>
+        <p class="muted">Step 2 of 2 — Verify with device biometrics</p>
+        <button id="owner-biometric-btn" class="primary-btn">🔒 Verify Fingerprint / Face</button>
+        <button id="owner-biometric-register-btn" class="ghost-btn">First time? Register biometric</button>
+        <p id="owner-biometric-error" class="error-text"></p>
+      </div>
+
+      <div id="owner-step-panel" class="owner-step" hidden>
+        <p class="success-text">✅ Owner verified</p>
+        <div class="setting-row">
+          <label>App name</label>
+          <input type="text" id="owner-app-name" class="text-field" />
+        </div>
+        <div class="setting-row">
+          <label>Default mode</label>
+          <select id="owner-default-mode">
+            <option value="assistant">Assistant</option>
+            <option value="study">Study</option>
+            <option value="coding">Coding</option>
+            <option value="writer">Writer</option>
+            <option value="translator">Translator</option>
+            <option value="research">Research</option>
+            <option value="creative">Creative</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label>Theme</label>
+          <select id="owner-theme">
+            <option value="nebula-violet">Nebula Violet</option>
+            <option value="aurora-cyan">Aurora Cyan</option>
+            <option value="solar-magenta">Solar Magenta</option>
+          </select>
+        </div>
+        <div class="setting-row">
+          <label>Custom system prompt</label>
+          <textarea id="owner-system-prompt" class="text-field" rows="3" placeholder="Optional — overrides mode personas for everyone"></textarea>
+        </div>
+        <div class="setting-row">
+          <label>Global memory enabled</label>
+          <input type="checkbox" id="owner-memory-toggle" class="toggle" />
+        </div>
+        <button id="owner-save-btn" class="primary-btn">Save configuration</button>
+        <p id="owner-save-status" class="success-text"></p>
+        <button id="owner-logout-btn" class="ghost-btn">Exit Owner Mode</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Tool panel (weather/news/search/ocr) -->
+<div id="tool-modal" class="modal-overlay" hidden>
+  <div class="modal glass">
+    <div class="modal-header"><h3 id="tool-title">Tool</h3><button class="icon-btn small close-modal">✕</button></div>
+    <div class="modal-body" id="tool-body"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@simplewebauthn/browser@10/dist/bundle/index.umd.min.js"></script>
+<script src="js/splash.js"></script>
+<script src="js/starfield.js"></script>
+<script src="js/voice.js"></script>
+<script src="js/owner.js"></script>
+<script src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
